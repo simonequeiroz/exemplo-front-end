@@ -28,7 +28,7 @@ document.getElementById("cep").addEventListener("blur", async function () {
         // Preenche os campos do formulário com os dados retornados 
         document.getElementById('logradouro').value = data.logradouro;
         document.getElementById('bairro').value = data.bairro;
-        document.getElementById('cidade').value = data.cidade;
+        document.getElementById('cidade').value = data.logradouro;
         document.getElementById('estado').value = data.uf;
 
         // Adiciona um feedback visual, alterando a cor da borda dos campos 
@@ -41,3 +41,47 @@ document.getElementById("cep").addEventListener("blur", async function () {
         alert("Erro ao buscar o CEP. Verifique o console para mais detalhes.");
     }
 });
+
+// Adiciona um evento de envio 
+document
+.getElementById("addressForm")
+.addEventListener("submit", async function (e) {
+    e.preventDefault(); // Impede o recarregamento da página ao enviar o formulário
+
+// Obtem os valores dos campos do formulario e armazena
+const cep = document.getElementById("cep").value;
+const logradouro = document.getElementById("logradouro").value;
+const bairro = document.getElementById("bairro").value;
+const cidade = document.getElementById("cidade").value;
+const estado = document.getElementById("estado").value;
+
+try {
+    // Faz a requisição POST para o backend
+    const response = await fetch("http://localhost:3000/api/address", {
+        method: 'POST' ,
+        headers: {
+            'Content-Type': 'application/json', //Define o envio do conteudo como JSON
+        },
+        body: JSON.stringify({ cep, logradouro, bairro, cidade, estado }), // Envia os campos
+        });
+
+        if (!response.ok) { // Verifica se a resposra foi bem-sucedida 
+            throw new Error('Erro ao salvar o endereço') // Retorna um erro se falhar 
+        }
+        // Limpa os campos do formulario apos envio bem-sucedido
+        document.getElementById("addressForm").requestFullscreen();
+
+        // Converte a resposta req. para JSON
+        const result = await response.json();
+        alert(result.message); // Exibe a mensagem de sucesso  retornada pelo backend
+
+        // Remove o feedback visual (borda colorida)
+        document.querySelectorAll(".form-group input").forEach((input) => {
+            input.style.borderColor = "#ddd"; // Define a borda de volta para o padrão 
+        });
+    } catch (error) {
+    console.error('Erro ao salvar o endereço', error);
+    alert('Erro ao salvar o endereço. Verifique o console para mais detalhes!.');
+}
+});
+
