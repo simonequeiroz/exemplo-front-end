@@ -28,7 +28,7 @@ document.getElementById("cep").addEventListener("blur", async function () {
         // Preenche os campos do formulário com os dados retornados 
         document.getElementById('logradouro').value = data.logradouro;
         document.getElementById('bairro').value = data.bairro;
-        document.getElementById('cidade').value = data.logradouro;
+        document.getElementById('cidade').value = data.localidade;
         document.getElementById('estado').value = data.uf;
 
         // Adiciona um feedback visual, alterando a cor da borda dos campos 
